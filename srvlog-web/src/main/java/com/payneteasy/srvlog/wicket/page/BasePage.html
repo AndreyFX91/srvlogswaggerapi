@@ -1,0 +1,63 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org/dtds.data/wicket-xhtml1.4-strict.dtd">
+    <wicket:head>
+        <title>Srvlog log collector</title>
+        <link href="css/main.css" rel="stylesheet">
+    </wicket:head>
+<body>
+<div class="container-fluid">
+    <div class="navbar navbar-inverse">
+        <div class="navbar-inner">
+
+            <a class="brand" href="#">SRVLOG</a>
+
+            <div class="nav-collapse collapse">
+                <ul class="nav">
+                    <li wicket:id="dashboard-container">
+                        <a href="#" wicket:id="dashboard">Dashboard</a>
+                    </li>
+                    <li wicket:id="logs-container">
+                        <a href="#" wicket:id="logs">Logs</a>
+                    </li>
+                    <li wicket:id="online-logs-container">
+                        <a href="#" wicket:id="online-logs">Online Logs</a>
+                    </li>
+
+                    <li wicket:id="detailed-logs-container">
+                        <a href="#" wicket:id="detailed-logs">Detailed logs</a>
+                    </li>
+
+                    <li wicket:id="add-hosts-container">
+                        <a href="#" wicket:id="add-hosts">Add hosts</a>
+                    </li>
+
+                </ul>
+
+                <div class="navbar-form pull-right">
+                    <a class="btn" href="j_spring_security_logout">Logout</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <wicket:enclosure child="warnings-link">
+        <div class="alert alert-block fade in">
+            <button type="button" class="close" data-dismiss="alert">Close</button>
+            <h4>Warnings!</h4>
+            <p>There are logs with unresolved hosts. Please add required hosts and press "Process unresolved logs"?</p>
+            <a href="#"  wicket:id="warnings-link" class="btn btn-primary">Process unresolved logs</a>
+            <a href="" wicket:id="show-unprocessed-hosts-link" class="btn btn-primary">Show unprocessed hosts</a>
+        </div>
+    </wicket:enclosure>
+
+</div>
+
+<script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+    $(".alert").alert();
+</script>
+
+<wicket:child/>
+</body>
+</html>

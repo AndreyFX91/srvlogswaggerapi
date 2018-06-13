@@ -1,0 +1,584 @@
+---
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: SRVLOG API
+host: virtserver.swaggerhub.com
+basePath: /spld/srvlog/1.0.0
+schemes:
+- https
+- http
+paths:
+  /dashboard:
+    post:
+      summary: Dashboard summary info and graph
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: DashboardRequest
+        description: date range
+        required: false
+        schema:
+          $ref: '#/definitions/DashboardRequest'
+      responses:
+        200:
+          description: List of logs and summary info
+          schema:
+            $ref: '#/definitions/Statistics'
+        400:
+          description: Invalid request parameters
+        403:
+          description: User is not authenticated/authorized
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /messages:
+    get:
+      summary: Messages list
+      parameters: []
+      responses:
+        200:
+          description: Messages list
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Message'
+        403:
+          description: User is not authenticated/authorized
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /logs:
+    post:
+      summary: Logs table data
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: LogsRequest
+        description: Data for logs table
+        required: false
+        schema:
+          $ref: '#/definitions/LogsRequest'
+      responses:
+        200:
+          description: ok
+          schema:
+            $ref: '#/definitions/LogsTable'
+        400:
+          description: Invalid request parameters
+        403:
+          description: User is not authenticated/authorized
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /online-logs:
+    post:
+      summary: Online logs data
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters:
+      - in: body
+        name: OnlineLogsRequest
+        description: Data for online logs table
+        required: false
+        schema:
+          $ref: '#/definitions/OnlineLogsRequest'
+      responses:
+        200:
+          description: ok
+          schema:
+            $ref: '#/definitions/OnlineLogsTable'
+        400:
+          description: Invalid request parameters
+        403:
+          description: User is not authenticated/authorized
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /hosts:
+    get:
+      summary: get unprocessed hosts
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        200:
+          description: ok
+          schema:
+            $ref: '#/definitions/inline_response_200'
+        403:
+          description: User is not authenticated/authorized
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+    post:
+      summary: add processed hosts
+      consumes:
+      - application/json
+      parameters: []
+      responses:
+        204:
+          description: ok
+        400:
+          description: Invalid request parameters
+        403:
+          description: User is not authenticated/authorized
+        500:
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorResponse'
+  /detailed-logs:
+    post:
+      summary: Detailed logs data
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      parameters: []
+      responses:
+        200:
+          description: ok
+          schema:
+            $ref: '#/definitions/DetailedLogsTable'
+definitions:
+  Statistics:
+    type: object
+    properties:
+      summary:
+        type: array
+        items:
+          $ref: '#/definitions/Statistics_summary'
+      logs:
+        type: array
+        items:
+          $ref: '#/definitions/Statistics_logs'
+    example:
+      summary:
+      - count: 0
+        caption: caption
+      - count: 0
+        caption: caption
+      logs:
+      - date: date
+        severity:
+        - count: 0
+          caption: caption
+        - count: 0
+          caption: caption
+        count: 6
+      - date: date
+        severity:
+        - count: 0
+          caption: caption
+        - count: 0
+          caption: caption
+        count: 6
+  Message:
+    type: object
+    properties:
+      severity:
+        type: string
+        example: WARN
+      message:
+        $ref: '#/definitions/Message_message'
+      id:
+        type: string
+    example:
+      severity: WARN
+      id: id
+      message:
+        text: There are logs with unresolved hosts. Please add required hosts and press "Process unresolved logs"?
+        title: Warnings!
+  LogsTable:
+    type: object
+    properties:
+      logs:
+        type: array
+        items:
+          $ref: '#/definitions/Log'
+      facility:
+        type: array
+        items:
+          type: string
+      host:
+        type: array
+        items:
+          type: string
+    example:
+      host:
+      - host
+      - host
+      logs:
+      - date: 2018-03-01 16:10:01
+        severity: INFO
+        host: idao-2
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        program: clamd
+        message: '[1]: Starting User Slice of root.'
+        facility: daemon
+      - date: 2018-03-01 16:10:01
+        severity: INFO
+        host: idao-2
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        program: clamd
+        message: '[1]: Starting User Slice of root.'
+        facility: daemon
+      facility:
+      - facility
+      - facility
+  OnlineLogsTable:
+    type: object
+    properties:
+      hostsOptions:
+        type: array
+        items:
+          type: string
+      logs:
+        type: array
+        items:
+          $ref: '#/definitions/Log'
+    example:
+      hostsOptions:
+      - hostsOptions
+      - hostsOptions
+      logs:
+      - date: 2018-03-01 16:10:01
+        severity: INFO
+        host: idao-2
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        program: clamd
+        message: '[1]: Starting User Slice of root.'
+        facility: daemon
+      - date: 2018-03-01 16:10:01
+        severity: INFO
+        host: idao-2
+        id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+        program: clamd
+        message: '[1]: Starting User Slice of root.'
+        facility: daemon
+  Log:
+    type: object
+    properties:
+      date:
+        type: string
+        example: 2018-03-01 16:10:01
+      facility:
+        type: string
+        example: daemon
+      severity:
+        type: string
+        example: INFO
+      host:
+        type: string
+        example: idao-2
+      id:
+        type: string
+        format: uuid
+      program:
+        type: string
+        example: clamd
+      message:
+        type: string
+        example: '[1]: Starting User Slice of root.'
+    example:
+      date: 2018-03-01 16:10:01
+      severity: INFO
+      host: idao-2
+      id: 046b6c7f-0b8a-43b9-b35d-6489e6daee91
+      program: clamd
+      message: '[1]: Starting User Slice of root.'
+      facility: daemon
+  ErrorResponse:
+    type: object
+    required:
+    - error
+    properties:
+      error:
+        $ref: '#/definitions/ErrorResponse_error'
+  DetailedLogsTable:
+    type: object
+    properties:
+      table:
+        $ref: '#/definitions/DetailedLogsTable_table'
+      typeData:
+        type: string
+    example:
+      typeData: typeData
+      table:
+        FIREWALL_ALERT_DATA:
+        - count: 0
+          class: class
+        - count: 0
+          class: class
+        OSSEC_ALERT_DATA:
+        - count: 5
+          type: type
+        - count: 5
+          type: type
+        FIREWALL_DROP_DATA:
+        - protocol: protocol
+          count: 6
+          destination:
+            port: 1
+            ip: ip
+          source:
+            port: 1
+            ip: ip
+        - protocol: protocol
+          count: 6
+          destination:
+            port: 1
+            ip: ip
+          source:
+            port: 1
+            ip: ip
+  FirewallAlertDataItem:
+    type: object
+    properties:
+      class:
+        type: string
+      count:
+        type: integer
+    example:
+      count: 0
+      class: class
+  FirewallDropDataItem:
+    type: object
+    properties:
+      count:
+        type: integer
+      destination:
+        $ref: '#/definitions/FirewallDropDataItem_destination'
+      source:
+        $ref: '#/definitions/FirewallDropDataItem_destination'
+      protocol:
+        type: string
+    example:
+      protocol: protocol
+      count: 6
+      destination:
+        port: 1
+        ip: ip
+      source:
+        port: 1
+        ip: ip
+  OssecAlertDataItem:
+    type: object
+    properties:
+      type:
+        type: string
+      count:
+        type: integer
+    example:
+      count: 5
+      type: type
+  DashboardRequest:
+    type: object
+    required:
+    - endDate
+    - startDate
+    properties:
+      startDate:
+        type: string
+        format: date
+        example: 2018-05-01T00:00:00.000Z
+      endDate:
+        type: string
+        format: date
+        example: 2018-05-07T00:00:00.000Z
+    example:
+      endDate: 2018-05-07T00:00:00.000Z
+      startDate: 2018-05-01T00:00:00.000Z
+  logs_filters:
+    properties:
+      dateStart:
+        type: string
+        format: date
+        example: 2018-05-01T00:00:00.000Z
+      dateEnd:
+        type: string
+        format: date
+        example: 2018-05-07T00:00:00.000Z
+      dateRange:
+        type: string
+        example: TODAY
+      facility:
+        type: array
+        items:
+          type: string
+      severity:
+        type: array
+        items:
+          type: string
+      host:
+        type: array
+        items:
+          type: string
+    example:
+      severity:
+      - severity
+      - severity
+      dateStart: 2018-05-01T00:00:00.000Z
+      dateRange: TODAY
+      host:
+      - host
+      - host
+      dateEnd: 2018-05-07T00:00:00.000Z
+      facility:
+      - facility
+      - facility
+  LogsRequest:
+    type: object
+    required:
+    - filters
+    properties:
+      filters:
+        $ref: '#/definitions/logs_filters'
+      query:
+        type: string
+    example:
+      query: query
+      filters:
+        severity:
+        - severity
+        - severity
+        dateStart: 2018-05-01T00:00:00.000Z
+        dateRange: TODAY
+        host:
+        - host
+        - host
+        dateEnd: 2018-05-07T00:00:00.000Z
+        facility:
+        - facility
+        - facility
+  OnlineLogsRequest:
+    type: object
+    required:
+    - host
+    - latestLogs
+    properties:
+      host:
+        type: string
+        example: ALL
+      latestLogs:
+        type: integer
+        example: 25
+    example:
+      host: ALL
+      latestLogs: 25
+  inline_response_200:
+    properties:
+      hosts:
+        type: string
+    example:
+      hosts: hosts
+  Statistics_summary:
+    properties:
+      caption:
+        type: string
+      count:
+        type: integer
+    example:
+      count: 0
+      caption: caption
+  Statistics_logs:
+    properties:
+      date:
+        type: string
+      count:
+        type: integer
+      severity:
+        type: array
+        items:
+          $ref: '#/definitions/Statistics_summary'
+    example:
+      date: date
+      severity:
+      - count: 0
+        caption: caption
+      - count: 0
+        caption: caption
+      count: 6
+  Message_message:
+    properties:
+      title:
+        type: string
+        example: Warnings!
+      text:
+        type: string
+        example: There are logs with unresolved hosts. Please add required hosts and press "Process unresolved logs"?
+    example:
+      text: There are logs with unresolved hosts. Please add required hosts and press "Process unresolved logs"?
+      title: Warnings!
+  ErrorResponse_error:
+    required:
+    - errorId
+    properties:
+      errorId:
+        type: string
+        format: uuid
+        description: Random Error ID in stacktrace log to localize erro
+  DetailedLogsTable_table:
+    properties:
+      FIREWALL_ALERT_DATA:
+        type: array
+        items:
+          $ref: '#/definitions/FirewallAlertDataItem'
+      FIREWALL_DROP_DATA:
+        type: array
+        items:
+          $ref: '#/definitions/FirewallDropDataItem'
+      OSSEC_ALERT_DATA:
+        type: array
+        items:
+          $ref: '#/definitions/OssecAlertDataItem'
+    example:
+      FIREWALL_ALERT_DATA:
+      - count: 0
+        class: class
+      - count: 0
+        class: class
+      OSSEC_ALERT_DATA:
+      - count: 5
+        type: type
+      - count: 5
+        type: type
+      FIREWALL_DROP_DATA:
+      - protocol: protocol
+        count: 6
+        destination:
+          port: 1
+          ip: ip
+        source:
+          port: 1
+          ip: ip
+      - protocol: protocol
+        count: 6
+        destination:
+          port: 1
+          ip: ip
+        source:
+          port: 1
+          ip: ip
+  FirewallDropDataItem_destination:
+    properties:
+      ip:
+        type: string
+      port:
+        type: integer
+    example:
+      port: 1
+      ip: ip
